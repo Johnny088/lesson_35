@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build --base=/Hillel_FS/"
+    "build": "vite build --base=/lesson_35/"
   },
   "devDependencies": {
     "glob": "^11.0.0",
