@@ -3,7 +3,7 @@ const markupLi = (id, title) =>
 const api = axios.create({
   baseURL: `https://6971cf4a32c6bacb12c49096.mockapi.io/books`,
 });
-const markupSearch = `<select class='select'><option value='asc'>From A to Z</option><option value='desc'>From Z to A</option></select><input type='text' name='search' class='search_input'/><button class='search_btn'>search</button></class=>`;
+const markupSearch = `<select class='select'><option value='asc'>From A to Z</option><option value='desc'>From Z to A</option></select><input type='text' name='search' class='search_input'/>`;
 let currentPage = 1;
 let currentLimit = 3;
 let search = '';
@@ -15,8 +15,11 @@ const container = document.createElement('div');
 const infoDiv = document.createElement('div');
 const loadMoreBtn = document.createElement('button');
 const addBtn = document.createElement('button');
+const searchBtn = document.createElement('button');
 // ------------------------------------------------
 searchForm.classList.add('search_form');
+searchBtn.classList.add('search_btn');
+searchBtn.textContent = 'Search';
 list.classList.add('list');
 container.classList.add('container');
 infoDiv.classList.add('info');
@@ -24,7 +27,8 @@ loadMoreBtn.classList.add('load');
 addBtn.classList.add('load');
 // ------------------------------------------------
 const root = document.querySelector('#root');
-searchForm.innerHTML = markupSearch;
+searchForm.insertAdjacentHTML('beforeend', markupSearch);
+searchForm.append(searchBtn);
 searchForm.style.display = 'none';
 root.innerHTML = '<h1 class="title">List of books</h1>';
 loadMoreBtn.textContent = 'load more';
@@ -50,16 +54,20 @@ async function renderBooks() {
     });
     const books = data.map(({ id, title }) => markupLi(id, title)).join('');
     list.insertAdjacentHTML('beforeend', books);
+
     if (data.length < currentLimit) {
       loadMoreBtn.disabled = true;
     } else {
       loadMoreBtn.disabled = false;
     }
   } catch (error) {
+    loadMoreBtn.disabled = true;
+    infoDiv.innerHTML = `<h1>Nothing was found...</h1>`;
     console.log(error);
   } finally {
     list.querySelector('.loader')?.remove();
     searchForm.style.display = 'block';
+    searchBtn.disabled = false;
   }
 }
 renderBooks();
@@ -255,6 +263,7 @@ searchForm.addEventListener('submit', searchHandler);
 
 function searchHandler(e) {
   e.preventDefault();
+  searchBtn.disabled = true;
   const form = e.target;
   search = form.elements.search.value.trim();
   form.reset();
@@ -269,6 +278,7 @@ selectForm.addEventListener('change', sortHandler);
 
 function sortHandler(e) {
   e.preventDefault();
+  searchBtn.disabled.true;
   sortOrder = e.target.value;
   infoDiv.innerHTML = '';
   list.innerHTML = '';
